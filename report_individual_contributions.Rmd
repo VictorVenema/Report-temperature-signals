@@ -1,0 +1,78 @@
+---
+title: "Report comparison of national/regional temperature signals with global/continental datasets"
+author: "Victor Venema"
+date: "August 8, 2017"
+output: 
+  word_document: 
+    reference_docx: "reference.docx"
+---
+
+# Introduction
+
+This working document describes the individual results for the comparison of nationally or regionally homogenized datasets with global datasets for the same area. A more formal and structured version of this document may morph into the supplemental information of our article. It finishes with some questions about further research. Please do not spread this document at this stage.
+
+```{r, results='asis', echo = FALSE}
+
+rm(list = ls())
+source("get_main_dir.R")
+source("make_dir.R")
+source("read_data_compute_trends.R")
+source("compute_time_limits.R")
+
+# Settings
+varFileStr = "annual_mean"
+varTitleStr = "Temperature"
+
+baseDir = get_main_dir()
+baseDataDir = paste0(baseDir, "formatted_data")    # Input data directory
+basePlotDir = paste0(baseDir, "quicklooks/trends") # Output quicklook and table directory
+make_dir(basePlotDir)
+metaDataDir = paste0(baseDir, "metadata")          # Input metadata directory
+globalDatasetStr = c("GHCNv3.hom", "GHCNv4.hom", "BEST.hom", "CRUCY.hom", "CRUTEM.hom", "GISS.hom", "ECAD.raw")
+
+# To add: HadIDS, also update introduction below.
+
+metaDataFileName = "metadata.csv"
+metaDataDirFileName = paste(metaDataDir, metaDataFileName, sep="/")
+metaData = read.csv(metaDataDirFileName, sep=";", as.is=TRUE, skip=28)
+
+noSets   = length(globalDatasetStr) # Number of global datasets
+noSeries = nrow(metaData)
+
+uniqueAreas = unique(metaData$region_name)
+noUniqueAreas = length(uniqueAreas)
+
+metaDataRegions = subset(x=metaData, subset = metaData$Priority1==9 ) # Really just countries
+metaDataCountries = subset(x=metaData, subset = metaData$Priority1<9 ) # Really just countries
+
+uniqueRegions = unique(metaDataRegions$region_name)
+noRegions = length(uniqueRegions)
+uniqueCountries = unique(metaDataCountries$region_name)
+noCountries = length(uniqueCountries)
+ 
+cat("We have", noUniqueAreas, "datasets from", noCountries, "countries and ", noRegions, "regions. For a number of countries we have multiple datasets.")
+countryStr = paste(uniqueCountries[1:noCountries-1], collapse=", ")
+countryStr = paste(countryStr, "and the", uniqueCountries[noCountries], collapse=" ")
+cat("The countries are: ", countryStr, ".", sep="")
+regionStr = paste(uniqueRegions[1:noRegions-1], collapse=", ")
+regionStr = paste(regionStr, "and", uniqueRegions[noRegions], collapse=" ")
+cat("The regions are: ", regionStr, ".", sep="")
+cat("In the remainder of this text we will call them all national datasets for simplicity.")
+cat('\n')
+
+cat('\n')
+cat("These national datasets are compared with the temperature signal computed from global and continental datasets for the same area.")
+cat("In the remainder of this text we will call them all global datasets for simplicity.")
+cat("These global datasets are NOAA's Global Historical Climate Network (GHCNv3 and GHCNv4), Berkeley Earth (BEST), the Climate Research Unit high-resolution country dataset (CRUCY) and their main dataset (CRUTEM4), NASA's Goddard Institute for Space Studies (GISS) and the European Climate Assessment and Dataset (ECA&D; raw data).")
+
+
+# for (iAreas in 1:noUniqueAreas){
+#   cat('\n')  
+#   cat("#", uniqueAreas[iAreas], "\n") 
+#   cat("Hello word", iAreas, "\n")
+#   cat('\n') 
+# }
+```
+
+
+# References
